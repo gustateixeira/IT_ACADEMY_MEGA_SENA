@@ -1,5 +1,4 @@
 package org.example;
-import java.util.ArrayList;
 
 public class Gambler {
     private final String NAME;
@@ -8,7 +7,8 @@ public class Gambler {
         this.CPF = cpf;
         this.NAME = name;
     }
-    public String getNAME(){
+    public String toString(){
         return NAME;
     }
+
 }

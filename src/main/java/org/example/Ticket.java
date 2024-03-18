@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Arrays;
+
 public class Ticket {
     private static int idCounter = 1000;
     private final Gambler OWNER;
@@ -7,8 +9,8 @@ public class Ticket {
     private final int ID;
 
     public Ticket( int [] t, Gambler g){
-        if(t.length > 5){
-            throw new IllegalArgumentException("Não é possível selecionar mais de 5 números");
+        if(t.length != 5){
+            throw new IllegalArgumentException("Não é possível selecionar mais ou menos de 5 números");
         }
         this.OWNER = g;
         this.NUMBERS= t;
@@ -24,5 +26,8 @@ public class Ticket {
     }
     public Gambler getOWNER(){
         return OWNER;
+    }
+    public String toString(){
+        return  OWNER.toString() + Arrays.toString(NUMBERS);
     }
 }

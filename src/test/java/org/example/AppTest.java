@@ -2,6 +2,9 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Unit test for simple App.
  */
@@ -10,12 +13,16 @@ public class AppTest
 
     @Test
     public void mainTest() {
-        Draw d = new Draw();
-        int [] i = {1,2,3,4,5};
-        Gambler g = new Gambler("Pedro José", "60138525021");
-        Ticket t = new Ticket(i, g);
-        int []  n = d.toDraw();
-        System.out.println(n);
     }
 
+
+    @Test
+    public void removeTest(){
+        ArrayList<Integer> n = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            n.add(i);
+        }
+        n.remove(3);
+        System.out.println(n);
+    }
 }
