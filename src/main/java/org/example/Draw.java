@@ -25,14 +25,12 @@ public class Draw {
     public ArrayList<Ticket> getTICKETS(){
         return this.TICKETS;
     }
-//    public void extraDraw(){
-//        Random r = new Random();
-//        int x = r.nextInt(50) + 1;
-//        if(NUMBERS.contains(x)){
-//            x = r.nextInt(50) + 1;
-//        }
-//        NUMBERS.add(NUMBERS.size()- 1, x);
-//    }
+    public void extraDraw(){
+        Random r = new Random();
+        int x = r.nextInt(NUMBERS.size() - 1) + 1;
+        DRAW.add(NUMBERS.remove(x));
+
+    }
     public ArrayList<Integer> getDRAW(){
         return DRAW;
     }

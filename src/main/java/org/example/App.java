@@ -2,10 +2,7 @@ package org.example;
 
 import javax.print.DocFlavor;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Hello world!
@@ -21,8 +18,17 @@ public class App
             if (input == 1) {
                 Draw d = new Draw();
                 ArrayList<Integer> numbers = new ArrayList<>();
-                while (input != 0) {
+                while (true) {
+                    if(input == 0){
+                        System.out.println("DESEJA ENCERRAR A FASE DE APOSTAS?");
+                        System.out.println("    SIM - '1'       NÃO - '2' ");
+                        input = sc.nextInt();
+                        if(input == 1){
+                            break;
+                        }
+                    }
                     System.out.println("Pressione '2' para registrar nova aposta");
+                    System.out.println("Pressione '3' listar apostas");
                     System.out.println("Pressione '0' para Finalizar a fase de apostas");
                     input = sc.nextInt();
                     System.out.println();
@@ -55,7 +61,7 @@ public class App
                             case 2:
                                 System.out.println("Quantas apostas deseja fazer?");
                                 input = sc.nextInt();
-                                System.out.printf("%d apostas surpresas serão criadas. ", input);
+                                System.out.printf("%d apostas surpresas serão criadas.%n", input);
                                 for(int i =0; i < input; i++) {
                                     int[] ti = surprise();
                                     System.out.println(Arrays.toString(ti));
@@ -63,6 +69,12 @@ public class App
                                     d.addTickets(t);
                                 }
                                 break;
+
+                        }
+                    }
+                    else if(input == 3){
+                        for (Ticket t : d.getTICKETS()){
+                            System.out.println(t);
                         }
                     }
             }
@@ -76,13 +88,32 @@ public class App
                 Thread.sleep(500);
                 d.toDraw();
                 numbers = d.getDRAW();
-                for (int i: numbers) {
-                    System.out.printf("#%d%n", i);
-                    Thread.sleep(250);
-                }
                 System.out.println(numbers);
                 ArrayList<Ticket> winners = checkResults(numbers,d.getTICKETS());
-                System.out.println(winners);
+                ArrayList<Integer> data = new ArrayList<>();
+                int i =0;
+                if(winners.isEmpty()){
+                    while(i < 25){
+                        d.extraDraw();
+                        numbers = d.getDRAW();
+                        Thread.sleep(500);
+                        winners =  checkResults(numbers, d.getTICKETS());
+                        if(winners.isEmpty()){
+                            i++;
+                        }
+                        else{
+                            System.out.println();
+                            System.out.println(winners);
+                            break;
+                        }
+                        if(i == 25){
+                            System.out.println("O sorteio não teve vencedores.");
+                        }
+                    }
+                }
+                Collections.sort(winners);
+                System.out.println(data(winners, numbers, i));
+
             }
     }
     public static int[] surprise(){
@@ -119,20 +150,27 @@ public class App
 
     public static ArrayList<Ticket> checkResults(ArrayList<Integer> numbers, ArrayList<Ticket> tickets){
         ArrayList<Ticket> winners = new ArrayList<>();
-        for(int i = 0; i < tickets.size(); i++){
-            int equals =0;
-            Ticket t = tickets.get(i);
-            int [] n = t.getNUMBERS();
-            for(int j = 0; j < n.length; j++){
-                if(numbers.get(j) == n[j]){
+        for (Ticket ticket : tickets) {
+            int equals = 0;
+            int[] n = ticket.getNUMBERS();
+            for (int k : n) {
+                if (numbers.contains(k)) {
                     equals++;
                 }
             }
-            if(equals == 5){
-                winners.add(t);
+            if (equals == 5) {
+                winners.add(ticket);
             }
         }
         return winners;
+    }
+    public static String data(ArrayList<Ticket> w,ArrayList<Integer> n, int r){
+
+
+        return "Números sorteados: " +  n + "\n" +
+                "Número de rodadas: " + r + "\n" +
+                "Número de apostas vencedoras: " + w.size() + "\n" +
+                "Apostas vencedoras: " + w + "\n";
     }
 }
 

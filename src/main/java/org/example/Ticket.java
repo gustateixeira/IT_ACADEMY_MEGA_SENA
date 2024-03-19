@@ -2,7 +2,7 @@ package org.example;
 
 import java.util.Arrays;
 
-public class Ticket {
+public class Ticket implements Comparable<Ticket> {
     private static int idCounter = 1000;
     private final Gambler OWNER;
     private final int [] NUMBERS;
@@ -29,5 +29,10 @@ public class Ticket {
     }
     public String toString(){
         return  OWNER.toString() + Arrays.toString(NUMBERS);
+    }
+
+    @Override
+    public int compareTo(Ticket o) {
+        return this.getOWNER().compareTo(o.getOWNER());
     }
 }
