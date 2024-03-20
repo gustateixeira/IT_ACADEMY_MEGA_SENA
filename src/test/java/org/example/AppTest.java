@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +45,13 @@ public class AppTest
         tickets.add(ti3);
         Collections.sort(tickets);
         System.out.println(tickets);
+        int [][]n = new int [3][3];
+        for (int j = 0; j < n.length; j++) {
+            for (int k = 0; k < n.length; k++) {
+                n[j][k] = 2;
+            }
+        }
+        System.out.println("Quantidade de números: ".length());
     }
 
 

@@ -1,7 +1,8 @@
 package org.example;
 
-import javax.print.DocFlavor;
-import java.sql.SQLOutput;
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -17,7 +18,7 @@ public class App
         int input = sc.nextInt();
             if (input == 1) {
                 Draw d = new Draw();
-                ArrayList<Integer> numbers = new ArrayList<>();
+                ArrayList<Integer> numbers;
                 while (true) {
                     if(input == 0){
                         System.out.println("DESEJA ENCERRAR A FASE DE APOSTAS?");
@@ -90,7 +91,6 @@ public class App
                 numbers = d.getDRAW();
                 System.out.println(numbers);
                 ArrayList<Ticket> winners = checkResults(numbers,d.getTICKETS());
-                ArrayList<Integer> data = new ArrayList<>();
                 int i =0;
                 if(winners.isEmpty()){
                     while(i < 25){
@@ -111,8 +111,12 @@ public class App
                         }
                     }
                 }
+                ArrayList<Integer> allNumbers = storeElements(d.getTICKETS());
                 Collections.sort(winners);
-                System.out.println(data(winners, numbers, i));
+                int [][] c = count(allNumbers);
+                Arrays.sort(c[0]);
+                System.out.println(data(winners, numbers, i,c));
+                saveAll(d.getTICKETS());
 
             }
     }
@@ -129,6 +133,15 @@ public class App
             t[i] = numbers.remove(x);
         }
         return t;
+    }
+    public static ArrayList<Integer> storeElements(ArrayList<Ticket> tickets){
+        ArrayList<Integer> allNumbers  = new ArrayList<>();
+        for(Ticket t : tickets){
+            for(int i : t.getNUMBERS()){
+                allNumbers.add(i);
+            }
+        }
+        return allNumbers;
     }
 
     public static int[] createTicket(){
@@ -164,13 +177,57 @@ public class App
         }
         return winners;
     }
-    public static String data(ArrayList<Ticket> w,ArrayList<Integer> n, int r){
-
-
+    public static String data(ArrayList<Ticket> w,ArrayList<Integer> n, int r, int [][] numbers){
+        String aux = "";
+        for (int[] i: numbers) {
+            aux += Arrays.toString(i) + "\n";
+        }
         return "Números sorteados: " +  n + "\n" +
                 "Número de rodadas: " + r + "\n" +
                 "Número de apostas vencedoras: " + w.size() + "\n" +
-                "Apostas vencedoras: " + w + "\n";
+                "Apostas vencedoras: " + w + "\n" +
+                "Quantidade de números: " +"\n" + aux +  "\n";
+    }
+    public static int [][] count(ArrayList<Integer> allNumbers){
+        int [][] data = new int[50][2];
+        for(int i =0 ; i < data.length; i++){
+            data[i][0] = i + 1;
+        }
+        for(int i = 0; i < 50; i++){
+            int aux = 0;
+            for (Integer number : allNumbers) {
+                if (i + 1 == number) {
+                    aux++;
+                }
+            }
+            data [i][1] = aux;
+        }
+        for (int i = 0; i < data.length; i++) {
+            for(int j = 0; j < data.length; j++){
+                if(data[i][1] >  data[j][1]){
+                    int [] tmp = data[i];
+                    data[i]= data [j];
+                    data[j] = tmp;
+                }
+            }
+        }
+        return data;
+
+    }
+    public static void saveAll(ArrayList<Ticket> tickets) {
+        try {
+            FileWriter fileWriter = new FileWriter("save.csv");
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
+
+            for (Ticket t : tickets) {
+                StringBuilder linha = new StringBuilder();
+                linha.append(t.getOWNER().getNAME()).append(Arrays.toString(t.getNUMBERS()));
+                csvWriter.writeNext(linha.toString().split(","));
+            }
+            csvWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
