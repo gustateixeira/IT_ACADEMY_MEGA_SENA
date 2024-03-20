@@ -79,6 +79,7 @@ public class App
                         }
                     }
             }
+                sc.close();
                 System.out.println("Fase de apostas encerrada!");
                 System.out.println("Fase de sorteio será iniciada em: ");
                 for(int i = 5; i > 0; i--){
@@ -117,7 +118,6 @@ public class App
                 Arrays.sort(c[0]);
                 System.out.println(data(winners, numbers, i,c));
                 saveAll(d.getTICKETS());
-
             }
     }
     public static int[] surprise(){
