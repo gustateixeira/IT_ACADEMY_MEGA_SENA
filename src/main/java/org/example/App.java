@@ -1,12 +1,15 @@
 package org.example;
 
 import com.opencsv.CSVWriter;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 /**
- * Hello world!
+ * @Author :  Gustavo Hillesheim Teixeira
+ * @Email :  g.hillesheim@edu.pucrs.br
+ * Dell IT Academy turma 20.
  *
  */
 public class App 
@@ -113,12 +116,17 @@ public class App
                 }
                 ArrayList<Integer> allNumbers = storeElements(d.getTICKETS());
                 Collections.sort(winners);
-                int [][] c = count(allNumbers);
+                int [][] c = sort(allNumbers);
                 Arrays.sort(c[0]);
                 System.out.println(data(winners, numbers, i,c));
                 saveAll(d.getTICKETS());
             }
     }
+
+    /**
+     * método para o modo "Surpresinha"
+     * @return retorna uma array de inteiros gerados pseudoaleatóriamente.
+     */
     public static int[] surprise(){
         ArrayList<Integer> numbers = new ArrayList<>();
         for(int i = 0; i < 50; i ++) {
@@ -133,6 +141,12 @@ public class App
         }
         return t;
     }
+
+    /**
+     * método para salvar todos os números dos tickets gerados em uma Lista
+     * @param tickets
+     * @return ArrayList de inteiros, referente à todos os tickets gerados
+     */
     public static ArrayList<Integer> storeElements(ArrayList<Ticket> tickets){
         ArrayList<Integer> allNumbers  = new ArrayList<>();
         for(Ticket t : tickets){
@@ -142,6 +156,11 @@ public class App
         }
         return allNumbers;
     }
+
+    /**
+     *
+     * @return vetor de inteiros com os números selecionados pelo usuário
+     */
 
     public static int[] createTicket(){
         int [] t = new int[5];
@@ -160,6 +179,13 @@ public class App
         return t;
     }
 
+    /**
+     *
+     * @param numbers ArrayList<Integer> de todos os números possíveis
+     * @param tickets ArrayList<Ticket> de todos os tickets criados
+     * @return ArrayList<Ticket> dos tickets vencedores
+     */
+
     public static ArrayList<Ticket> checkResults(ArrayList<Integer> numbers, ArrayList<Ticket> tickets){
         ArrayList<Ticket> winners = new ArrayList<>();
         for (Ticket ticket : tickets) {
@@ -176,10 +202,39 @@ public class App
         }
         return winners;
     }
-    public static String data(ArrayList<Ticket> w,ArrayList<Integer> n, int r, int [][] numbers){
+    public static int [][] sort(ArrayList<Integer> allNumbers) {
+        int[][] data = new int[50][2];
+        for (int i = 0; i < data.length; i++) {
+            data[i][0] = i + 1;
+        }
+        for (int i = 0; i < 50; i++) {
+            int finalI = i;
+            data[i][1] = (int) allNumbers.stream().filter(k -> k == finalI + 1).count();
+        }
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data.length; j++) {
+                if (data[i][1] > data[j][1]) {
+                    int[] tmp = data[i];
+                    data[i] = data[j];
+                    data[j] = tmp;
+                }
+            }
+        }
+        return data;
+    }
+
+    /**
+     *
+     * @param w ArrayList dos tickets vencedores
+     * @param n ArrayList dos números sorteados
+     * @param r número de rodadas feitas até um vencedor ou até 25
+     * @param
+     * @return
+     */
+    public static String data(ArrayList<Ticket> w, ArrayList<Integer> n, int r, int [][] numbers ){
         String aux = "";
-        for (int[] i: numbers) {
-            aux += Arrays.toString(i) + "\n";
+        for (int [] i:  numbers) {
+            aux += Arrays.toString(i)+ "\n";
         }
         return "Números sorteados: " +  n + "\n" +
                 "Número de rodadas: " + r + "\n" +
@@ -187,47 +242,22 @@ public class App
                 "Apostas vencedoras: " + w + "\n" +
                 "Quantidade de números: " +"\n" + aux +  "\n";
     }
-    public static int [][] count(ArrayList<Integer> allNumbers){
-        int [][] data = new int[50][2];
-        for(int i =0 ; i < data.length; i++){
-            data[i][0] = i + 1;
-        }
-        for(int i = 0; i < 50; i++){
-            int aux = 0;
-            for (Integer number : allNumbers) {
-                if (i + 1 == number) {
-                    aux++;
-                }
-            }
-            data [i][1] = aux;
-        }
-        for (int i = 0; i < data.length; i++) {
-            for(int j = 0; j < data.length; j++){
-                if(data[i][1] >  data[j][1]){
-                    int [] tmp = data[i];
-                    data[i]= data [j];
-                    data[j] = tmp;
-                }
-            }
-        }
-        return data;
-
-    }
-    public static void saveAll(ArrayList<Ticket> tickets) {
+       public static void saveAll(ArrayList<Ticket> tickets) {
         try {
             FileWriter fileWriter = new FileWriter("save.csv");
             CSVWriter csvWriter = new CSVWriter(fileWriter);
 
             for (Ticket t : tickets) {
                 StringBuilder linha = new StringBuilder();
-                linha.append(t.getOWNER().getNAME()).append(Arrays.toString(t.getNUMBERS()));
+                linha.append(t.getOWNER().getNAME()).append(" ").append(Arrays.toString(t.getNUMBERS()));
                 csvWriter.writeNext(linha.toString().split(","));
             }
             csvWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
+            }
+       }
 }
+
 
 

@@ -1,11 +1,14 @@
 package org.example;
 
+import com.sun.org.apache.xalan.internal.xsltc.runtime.Node;
 import org.junit.jupiter.api.Test;
 import org.junit.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -62,6 +65,35 @@ public class AppTest
             n.add(i);
         }
         n.remove(3);
+        System.out.println(n);
+    }
+    @Test
+    public void fillArrayListTest(){
+        ArrayList<Integer> a = new ArrayList<>();
+        for(int i = 0; i <= 50; i++){
+            if(i % 2 == 0) {
+                a.add(i);
+                a.add(i);
+                a.add(i);
+                a.add(i);
+            }
+            else{
+                a.add(i);
+            }
+
+
+        }
+        ArrayList<LinkedList<Integer>> n = new ArrayList<>();
+        for(int i= 0; i < 50; i++){
+            LinkedList<Integer> l = new LinkedList<>();
+            l.add(i+1);
+            int finalI = i;
+            l.add((int) a.stream().filter(k -> k == finalI).count());
+            n.add(l);
+        }
+        for(LinkedList<Integer> i : n){
+            System.out.println(Arrays.toString(i.toArray()));
+        }
         System.out.println(n);
     }
 }
