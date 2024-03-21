@@ -9,7 +9,8 @@ import java.util.*;
 /**
  * @Author :  Gustavo Hillesheim Teixeira
  * @Email :  g.hillesheim@edu.pucrs.br
- * Dell IT Academy turma 20.
+ *
+ * @Project : Dell IT Academy 2024/1.
  *
  */
 public class App 
@@ -21,7 +22,6 @@ public class App
         int input = sc.nextInt();
             if (input == 1) {
                 Draw d = new Draw();
-                ArrayList<Integer> numbers;
                 while (true) {
                     if(input == 0){
                         System.out.println("DESEJA ENCERRAR A FASE DE APOSTAS?");
@@ -92,33 +92,28 @@ public class App
                 System.out.println("Sorteio INICIADO!");
                 Thread.sleep(500);
                 d.toDraw();
-                numbers = d.getDRAW();
-                System.out.println(numbers);
-                ArrayList<Ticket> winners = checkResults(numbers,d.getTICKETS());
+                ArrayList<Ticket> winners = checkResults(d.getDRAW(),d.getTICKETS());
                 int i =0;
                 if(winners.isEmpty()){
                     while(i < 25){
                         d.extraDraw();
-                        numbers = d.getDRAW();
-                        winners =  checkResults(numbers, d.getTICKETS());
+                        winners =  checkResults(d.getDRAW(), d.getTICKETS());
                         if(winners.isEmpty()){
                             i++;
                         }
                         else{
-                            System.out.println();
-                            System.out.println(winners);
                             break;
-                        }
-                        if(i == 25){
-                            System.out.println("O sorteio não teve vencedores.");
                         }
                     }
                 }
+                Thread.sleep(1000);
+                System.out.println("Sorteio CONCLUIDO! Fase de Apuração iniciada!");
+                Thread.sleep(5000);
                 ArrayList<Integer> allNumbers = storeElements(d.getTICKETS());
                 Collections.sort(winners);
                 int [][] c = sort(allNumbers);
-                Arrays.sort(c[0]);
-                System.out.println(data(winners, numbers, i,c));
+                System.out.println("Fase de apuração concluída!");
+                System.out.println(toString(winners, d.getDRAW(), i,c));
                 saveAll(d.getTICKETS());
             }
     }
@@ -186,6 +181,12 @@ public class App
      * @return ArrayList<Ticket> dos tickets vencedores
      */
 
+    /**
+     * Método para checar se houve vencedores
+     * @param numbers todos os numeros sorteados
+     * @param tickets todos os tickets criados
+     * @return tickets vencedores
+     */
     public static ArrayList<Ticket> checkResults(ArrayList<Integer> numbers, ArrayList<Ticket> tickets){
         ArrayList<Ticket> winners = new ArrayList<>();
         for (Ticket ticket : tickets) {
@@ -202,6 +203,12 @@ public class App
         }
         return winners;
     }
+
+    /**
+     * MÉTODO PARA ORDENAR OS NÚMEROS PELA QUANTIDADE DE ESCOLHAS
+     * @param allNumbers
+     * @return MATRIZ DE INTEIRO COM O NÚMERO E O SUAS REPETIÇÕES
+     */
     public static int [][] sort(ArrayList<Integer> allNumbers) {
         int[][] data = new int[50][2];
         for (int i = 0; i < data.length; i++) {
@@ -224,24 +231,42 @@ public class App
     }
 
     /**
-     *
+     *To String para todos os dados
      * @param w ArrayList dos tickets vencedores
      * @param n ArrayList dos números sorteados
      * @param r número de rodadas feitas até um vencedor ou até 25
-     * @param
-     * @return
+     * @param numbers números ordenados pela sua repetição
+     * @return String
      */
-    public static String data(ArrayList<Ticket> w, ArrayList<Integer> n, int r, int [][] numbers ){
+    public static String toString(ArrayList<Ticket> w, ArrayList<Integer> n, int r, int [][] numbers ){
         String aux = "";
         for (int [] i:  numbers) {
-            aux += Arrays.toString(i)+ "\n";
+            aux += Arrays.toString(i) + "\n";
         }
-        return "Números sorteados: " +  n + "\n" +
-                "Número de rodadas: " + r + "\n" +
-                "Número de apostas vencedoras: " + w.size() + "\n" +
-                "Apostas vencedoras: " + w + "\n" +
-                "Quantidade de números: " +"\n" + aux +  "\n";
+        if(w.isEmpty()){
+            return "Números sorteados: " +  n + "\n" +
+                    "Número de rodadas: " + r + "\n" +
+                    "N  VEZES" + "\n" + aux + "\n" +
+                    "Não houve vencedores\n";
+        }
+        if(w.size() > 1) {
+            return "Números sorteados: " + n + "\n" +
+                    "Número de rodadas: " + r + "\n" +
+                    "Vencedores: " + w + "\n" +
+                    "N  VEZES" + "\n" + aux + "\n" +
+                    "Prêmio para cada vencedor: R$" + prize(w.size()) + "\n";
+        }
+        return    "Números sorteados: " + n + "\n" +
+                    "Número de rodadas: " + r + "\n" +
+                    "Vencedores: " + w + "\n" +
+                    "N  VEZES" + "\n" + aux + "\n" +
+                    "Prêmio para o vencedor: R$" + prize(w.size()) + "\n";
     }
+
+    /**
+     * Método que salva em um arquivo CSV os TICKETS criados.
+     * @param tickets
+     */
        public static void saveAll(ArrayList<Ticket> tickets) {
         try {
             FileWriter fileWriter = new FileWriter("save.csv");
@@ -257,6 +282,12 @@ public class App
             e.printStackTrace();
             }
        }
+       public static int prize(int winners){
+        if (winners > 0){
+            return  100000000 / winners;
+       }
+        return -1;
+    }
 }
 
 
