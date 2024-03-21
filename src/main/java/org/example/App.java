@@ -97,7 +97,6 @@ public class App
                     while(i < 25){
                         d.extraDraw();
                         numbers = d.getDRAW();
-                        Thread.sleep(500);
                         winners =  checkResults(numbers, d.getTICKETS());
                         if(winners.isEmpty()){
                             i++;
